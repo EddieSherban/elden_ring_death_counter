@@ -9,3 +9,6 @@
 
  # Note on Operating Systems
    Currently only tested on my windows computer, i'm not sure how functionality with other OS works, or if it even works on other computers.
+
+# TO FIX:
+ There's this weird bug where the place that the application runs from will not be clickable. For example if you run the script from VSCode, VSCode is no longer clickable, but you can alt tab to it and edit text, so you have to ALT+F4 then reopen it. Same thing goes for if you open the program from File Explorer: when the program ends, Explorer is not clickable unless you switch to it, then ALT+F4 out of it, and reopen it.
