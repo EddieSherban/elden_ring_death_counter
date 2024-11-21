@@ -21,6 +21,30 @@ def read_deaths():
         with open('deaths.txt', 'r') as file:
             return int(file.read())
     return 0
+
+def read_settings():
+    settings = {
+        "font size": 50,  # default value
+        #add defaults for other settings when needed
+    }
+
+    if os.path.exists('settings.txt'):
+        with open('settings.txt', 'r') as file:
+            for line in file:
+                # skip empty lines or lines without a colon
+                if ':' not in line.strip():
+                    continue
+
+                # split line into key and value
+                key, value = map(str.strip, line.split(':', 1))
+
+                # convert value to integer if numeric
+                if value.isdigit():
+                    value = int(value)
+
+                #update settinsg dictrionary
+                settings[key.lower()] = value
+    return settings
     
 def write_deaths(deaths):
     with open('deaths.txt', 'w') as file:
@@ -55,10 +79,8 @@ def check_for_death():
     cropped_screen = screen[round(screen_h*0.48):round(screen_h*0.53), round(screen_w*0.4):round(screen_w*0.605)]
     #present_image(cropped_screen, "cropped screen")
     cropped_screen_equalized = cv2.equalizeHist(cropped_screen)
-    cropped_template_equalized = cv2.equalizeHist(cropped_template)
     #screen_edges = detect_color_edges(cropped_screen)
     screen_edges = cv2.Canny(cropped_screen_equalized, 300, 400)
-    template_edges = cv2.Canny(cropped_template_equalized, 100, 150)
     #present_image(screen_edges, "screen edges")
     #present_image(template_edges, "template edges")
     res = cv2.matchTemplate(screen_edges, template_edges, cv2.TM_CCOEFF_NORMED)
@@ -84,7 +106,7 @@ def make_window_transparent(hwnd):
     margins = MARGINS(-1, -1, -1, -1)
     ctypes.windll.dwmapi.DwmExtendFrameIntoClientArea(hwnd, ctypes.byref(margins))
     # Set window style to layered with transparent attributes
-    ctypes.windll.user32.SetWindowLongW(hwnd, -20, ctypes.windll.user32.GetWindowLongW(hwnd, -20) | 0x80000 | 0x20)
+    ctypes.windll.user32.SetWindowLongW(hwnd, -20, ctypes.windll.user32.GetWindowLongW(hwnd, -20) | 0x80000)
     # Always on top
     ctypes.windll.user32.SetWindowPos(hwnd, -1, 0, 0, 0, 0, 0x0003)
 
@@ -105,9 +127,14 @@ template = cv2.imread('you_died.png', 0)
 #present_image(template, "template")
 template_w, template_h = template.shape[::-1]
 cropped_template = template[round(template_h*0.48):round(template_h*0.53), round(template_w*0.4):round(template_w*0.605)] # note: 48% to 53% of image height
+cropped_template_equalized = cv2.equalizeHist(cropped_template)
+template_edges = cv2.Canny(cropped_template_equalized, 100, 150)
 #present_image(cropped_template, "cropped template")
 #present_image(template16, "template 16")
 #print("beginning")
+
+settings = read_settings()
+font_size = settings.get("font size", 50) #default to 50 if key not found
 
 #text overlay init
 root = tk.Tk()
@@ -130,7 +157,7 @@ increment_button.pack(side="left", expand=True, fill="both")
 decrement_button = tk.Button(control_window, text="-", command=decrement_deaths, font=("Helvetica", 20))
 decrement_button.pack(side="right", expand=True, fill="both")
 
-l = tk.Label(root, text='', font=("Helvetica", 60), bg=root['bg'])
+l = tk.Label(root, text='', font=("Helvetica", font_size), bg=root['bg'])
 l.pack(expand=True)
 l.place(relx=0.5, y=10, anchor='n')
 
