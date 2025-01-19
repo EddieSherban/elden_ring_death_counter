@@ -1,3 +1,6 @@
+font: Calibri Light
 font size: 30
+font color: white
+death font color: blue
 other settings: 
 even more settings: 

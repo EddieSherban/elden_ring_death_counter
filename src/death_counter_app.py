@@ -24,7 +24,11 @@ def read_deaths():
 
 def read_settings():
     settings = {
+        "font": "Vivaldi",
         "font size": 50,  # default value
+        "font color": "cyan",
+        "death font color": "yellow",
+
         #add defaults for other settings when needed
     }
 
@@ -73,7 +77,7 @@ def capture_screen():
 
 # Check for "You Died" on the screen
 def check_for_death():
-    l.config(fg="cyan")
+    l.config(fg=font_color)
     screen = capture_screen()
     screen_w, screen_h = screen.shape[::-1]
     cropped_screen = screen[round(screen_h*0.48):round(screen_h*0.53), round(screen_w*0.4):round(screen_w*0.605)]
@@ -92,7 +96,7 @@ def check_for_death():
     return False
 
 def update_deaths_text(deaths):
-    l.config(text=f"Deaths: {deaths}", fg="yellow")
+    l.config(text=f"Deaths: {deaths}", fg=death_font_color)
 
 def make_window_transparent(hwnd):
     # Define the MARGINS structure
@@ -133,8 +137,12 @@ template_edges = cv2.Canny(cropped_template_equalized, 100, 150)
 #present_image(template16, "template 16")
 #print("beginning")
 
+# Establish settings values
 settings = read_settings()
+font_deaths = settings.get("font", "Vivaldi") # default to Vivaldi if key not found
 font_size = settings.get("font size", 50) #default to 50 if key not found
+font_color = settings.get("font color", 1)
+death_font_color = settings.get("death font color", 1)
 
 #text overlay init
 root = tk.Tk()
@@ -157,7 +165,8 @@ increment_button.pack(side="left", expand=True, fill="both")
 decrement_button = tk.Button(control_window, text="-", command=decrement_deaths, font=("Helvetica", 20))
 decrement_button.pack(side="right", expand=True, fill="both")
 
-l = tk.Label(root, text='', font=("Helvetica", font_size), bg=root['bg'])
+# Description of the "Deaths" text on the screen
+l = tk.Label(root, text='', font=(font_deaths, font_size), bg=root['bg'])
 l.pack(expand=True)
 l.place(relx=0.5, y=10, anchor='n')
 
