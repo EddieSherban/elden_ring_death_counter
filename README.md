@@ -31,3 +31,5 @@
   • Improved the algorithm so that it processes the template image once at the beginning of the program instead of every screenshot.  
   • Added "settings.txt" which can be edited. Currently only have "Deaths:" font size.  
   
+  # Updates: Jan 18, 2025
+  • Added adjustable fonts for "Deaths: " text, as well as different colors.
